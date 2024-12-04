@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InvoicesAttachment;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,26 +30,22 @@ class InvoicesAttachmentController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     "file_name"=>"mimes:jpeg,jpg,pdf,png"
-        // ] , [
-        //     "file_name.mimes"=>"the file extend must be jpeg"
-        // ]);
-        // return $request;
-        
-        // return  $request->file('file_name');
-        $image = $request->file('file_name');
-        $file_name = $image->getClientOriginalName();
+    
+       try{
+                $image = $request->file("picture");
+                $file_name = $image->getClientOriginalName();
 
-        InvoicesAttachment::create([
-            "file_name" => $file_name,
-            "invoice_number" =>$request->invoice_number,
-            "invoice_id" =>$request->invoice_id,
-            "Created_by" => Auth::user()->name,
-        ]);
+                InvoicesAttachment::create([
+                    "file_name" => $file_name,
+                    "invoice_number" =>$request->invoice_number,
+                    "invoice_id" =>$request->invoice_id,
+                    "Created_by" => Auth::user()->name,
+                ]);
 
-
-        $request->file_name->move(public_path("attachments/".$request->invoice_number) , $file_name);
+                $request->picture->move(public_path("attachments/".$request->invoice_number ),$file_name);
+       }catch(Exception $e){
+            return "$e";
+       }
         return redirect('/invoices');
     }
 

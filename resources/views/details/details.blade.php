@@ -112,7 +112,7 @@
                                         <th class="wd-10p border-bottom-0">{{$invoice->user}}</th>
                                         <th class="wd-15p border-bottom-0">{{$invoice->Payment_Date}} </th>
                                        
-                                        <th  class="   {{($invoice->value_status) == 0 ? "text-danger" : "text-success"}}"> {{$invoice->value_status == 0 ? " غير مدفوعه " : "مدفوعه"}}</th>
+                                        <th  class="   {{($invoice->Value_Status) == 0 ? "text-danger" : "text-success"}}"> {{$invoice->Value_Status == 0 ? " غير مدفوعه " : "مدفوعه"}}</th>
                                        
                                       
                                     </tr>
@@ -140,7 +140,7 @@
                                                     <form method="POST" class="form m-5" action="{{route("attachment_store")}}" enctype="multipart/form-data">
                                                         @method("POST")
                                                         @csrf
-                                                        <input class="form-control" type="file" name="file_name">
+                                                        <input class="form-control" type="file" name="picture">
                                                         <input type="hidden" name="invoice_id" value="{{$invoice->id}}">
                                                         <input type="hidden" name="invoice_number" value="{{$invoice->invoice_number}}">
                     

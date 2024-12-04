@@ -23,15 +23,34 @@ Route::get("/home" , [HomeController::class , "index"])->name("home");
 // the invoices page routes
 Route::resource("invoices" , InvoicesController::class);
 // delete the invoice 
-Route::get("invoicesDelete/{id}" , [InvoicesController::class , "destroy"])->name("invoicesDelete.destroy");
+Route::get("invoicesDelete" , [InvoicesController::class , "destroy"])->name("invoicesDelete.destroy");
+// delete the invoice 
+Route::get("invoicesForceDelete" , [InvoicesController::class , "forceDelete"])->name("invoicesForceDelete.forceDelete");
 // delete the invoice 
 Route::get("invoicesEdit/{id}" , [InvoicesController::class , "edit"])->name("invoicesEdit.edit");
 // the update if invoices
 Route::post("invoices_update" , [InvoicesController::class , "update"])->name("invoices_update.update");
 // udpate status in the invoices
 Route::get("update_status/{id}" , [InvoicesController::class , "udpate_status"])->name("update_status"); 
+// udpate the payment method in the invoices
+Route::post("update_payment" , [InvoicesController::class , "update_payment"])->name("update_payment.update");
+// the paid invoices 
+Route::get("paidInvoices" , [InvoicesController::class , "paidInvoices"])->name("paidInvoices");
+// the paid invoices 
+Route::get("unpaidInvoices" , [InvoicesController::class , "unpaidInvoices"])->name("unpaidInvoices");
+
+// the archive invoices 
+Route::get("archiveInvoices" , [InvoicesController::class , "archiveInvoices"])->name("archiveInvoices.archive");
+
+// the unArchive invoices 
+Route::get("unArchiveInvoices" , [InvoicesController::class , "unArchiveInvoices"])->name("unArchiveInvoices.unArchive");
+
+// the print invoices 
+Route::get("printInvoice/{id}" , [InvoicesController::class , "printInvoice"])->name("printInvoice");
+
 //show the details of invoice 
 Route::get("invoices_details/{id}" , [InvoicesDetailsController::class , "invoices_details"])->name("invoices_details");
+
 // update the attachment in the invoices 
 Route::post("attachment" , [InvoicesAttachmentController::class , "store"])->name("attachment_store");
 
