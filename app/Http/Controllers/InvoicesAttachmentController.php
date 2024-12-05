@@ -30,6 +30,7 @@ class InvoicesAttachmentController extends Controller
      */
     public function store(Request $request)
     {
+        return $request;
     
        try{
                 $image = $request->file("picture");

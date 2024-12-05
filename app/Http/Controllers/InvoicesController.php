@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\addInvoiceMail;
 use App\Models\invoices;
 use App\Models\InvoicesAttachment;
 use App\Models\InvoicesDetails;
 use App\Models\Product;
 use App\Models\Section;
+use App\Models\User;
+use App\Notifications\invocieNotify;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class InvoicesController extends Controller
@@ -64,32 +69,32 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
-       
-        
-        // create in the inovices table 
+     
         try{
 
-            invoices::create([
-                "invoice_number"=>Auth::user()->id.$request->section.$request->invoice_number,
-                "invoice_date"=>$request->invoice_date,
-                "due_date"=>$request->due_date,
-                "product"=>$request->product,
-                "section_id"=>$request->section,
-                "Amount_collection"=>$request->Amount_collection,
-                "Amount_commision"=>$request->Amount_commission,
-                "discount"=>$request->discount,
-                "rate_vate"=>$request->rate_vate,
-                "value_vate"=>$request->value_vate,
-                "total"=>$request->total,
-                "status"=>"غير مدفوعه",
-                "value_status"=>0, 
-                "note"=>$request->note,
-                "user"=>Auth::user()->name,
-            ]);
+              
+       
+        $invoice = new invoices();
+        $invoice->invoice_number = Auth::user()->id.$request->section.$request->invoice_number;
+        $invoice->invoice_date = $request->invoice_date;
+        $invoice->due_date = $request->due_date;
+        $invoice->product = $request->product;
+        $invoice->section_id = $request->section;
+        $invoice->Amount_collection = $request->Amount_collection;
+        $invoice->Amount_commision = $request->Amount_commission;
+        $invoice->discoint = $request->discount;
+        $invoice->rate_vate = $request->rate_vate;
+        $invoice->value_vate = $request->value_vate;
+        $invoice->total = $request->total;
+        $invoice->status = "غير مدفوعه";
+        $invoice->value_status = 0;
+        $invoice->note = $request->note;
+        $invoice->user = Auth::user()->name;
+        $invoice->save();
 
-            // create in the invoices_details table 
-            $invoice_id = invoices::latest()->first()->id;
-            $invoice_id = invoices::latest()->first()->id;
+        $invoice_id = invoices::latest()->first()->id;
+     
+            //  create the details seciton 
             $details = new InvoicesDetails();
             $details->invoice_number = Auth::user()->id.$request->section.$request->invoice_number;
             $details->invoice_id = $invoice_id;
@@ -100,35 +105,32 @@ class InvoicesController extends Controller
             $details->note = $request->note;
             $details->user = Auth::user()->name;
             $details->save();
-            
-            // create in the attachment table 
-            
-            if($request->hasFile("picture")){
-                
-                $image = $request->file("picture");
-                $file_name = $image->getClientOriginalName();
-                // $path = $image->store("public" , "disk"),
-                
-                InvoicesAttachment::create([
-                    
-                    "invoice_number" => Auth::user()->id.$request->section.$request->invoice_number,
-                    "file_name" => $file_name,
-                    "invoice_id" => $invoice_id,
-                    "created_by" => Auth::user()->name,
-                    
-                ]);
 
-                // move the file to the server
-                $request->picture->move(public_path("attachments/".Auth::user()->id.$request->section.$request->invoice_number),$file_name);
+            if($request->has("picture")){
                 
-                session()->flash("success" , "the invoice added successfully");
+            $image = $request->file("picture");
+            $file_name = $image->getClientOriginalName();
+
+
+            $attachment = new InvoicesAttachment();
+            $attachment->invoice_number =  Auth::user()->id.$request->section.$request->invoice_number;
+            $attachment->invoice_id = $invoice_id;
+            $attachment->file_name = $file_name;
+            $attachment->Created_by = Auth::user()->name;
+            $attachment->save();
+
+            $request->picture->move(public_path("attachments/".Auth::user()->id.$request->section.$request->invoice_number) , $file_name);
+
+
             }
-            }catch(Exception $e){
-                session()->flash("fail" , "the invoice field to add");
-            };
+
+            
+            session()->flash("success" , "the invoice added successfully");
                 
 
-
+        }catch(Exception $e){
+            session()->flash("fail" , "the createtion field");
+        }
 
         return redirect("/invoices")->with("success");
 

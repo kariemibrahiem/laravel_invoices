@@ -28,8 +28,8 @@ return new class extends Migration
             $table->boolean("value_status");
             $table->text("note")->nullable();
             $table->string("user");
-            $table->date("deleted_at");
-            $table->softDeletes();
+            // $table->date("deleted_at");
+            // $table->softDeletes();
             $table->timestamps();
         });
     }

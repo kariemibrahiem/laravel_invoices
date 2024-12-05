@@ -157,7 +157,7 @@
 
                         <div class="col-sm-12 col-md-12">
                             <input type="file" name="picture" class="dropify" accept=".pdf,.jpg, .png, image/jpeg, image/png"
-                                data-height="70" />
+                                />
                         </div><br>
 
                         <div class="d-flex justify-content-center">

@@ -73,6 +73,7 @@
                                                 <th class="wd-10p border-bottom-0">المنتج</th>
                                                
                                                 <th class="wd-25p border-bottom-0"> الحاله </th>
+                                                <th class="wd-25p border-bottom-0"> ملاحظات </th>
                                                 <th class="wd-25p border-bottom-0"> الاجمالي </th>
                                             </tr>
                                         </thead>
@@ -92,7 +93,6 @@
                                             {{-- display the invoices details --}}
                                             <th title="change the invoice status" onclick="document.getElementById('update_status').submit()" style="cursor:pointer" class=" btn btn-sm  {{($invoice->value_status) == 0 ? "text-danger btn-outline-danger" : "text-success btn-outline-success"}}"> <a  href="{{route('update_status' , $invoice->id)}}">{{$invoice->value_status == 0 ? " غير مدفوعه " : "مدفوعه"}}</a></th>
                                             <th class="wd-25p border-bottom-0" > {{$invoice->note != null ? $invoice->note : "لا يوجد"}} </th>
-                                            <th class="wd-25p border-bottom-0"> </th>
                                             <th class="wd-25p border-bottom-0"> {{$invoice->total}} </th>
                                             <th>
                                                 <div class="dropdown">
