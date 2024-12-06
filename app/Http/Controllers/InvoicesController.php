@@ -9,6 +9,7 @@ use App\Models\InvoicesDetails;
 use App\Models\Product;
 use App\Models\Section;
 use App\Models\User;
+use App\Notifications\addInvoices;
 use App\Notifications\invocieNotify;
 use Exception;
 use Illuminate\Http\Request;
@@ -24,32 +25,37 @@ class InvoicesController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // display the invoices
     public function index()
     {
         $invoices = invoices::all();
         return view("invoices.invoices" , compact("invoices"));
     }
+
     // the paid invoice index to dispaly
     public function paidInvoices(){
         $invoices = invoices::where("value_status" ,1)->get();
         return view("invoices.paidInvoices" , compact("invoices"));
     }
+
     // the unpaid invoice index to dispaly
     public function unpaidInvoices(){
         $invoices = invoices::where("value_status" ,0)->get();
         return view("invoices.unpaidInvoices" , compact("invoices"));
     }
+
     // the archiveing and unarchiving part 
     public function archiveInvoices(){
         $invoices =  invoices::onlyTrashed()->get();
         return view("invoices.archiveInvoices" , compact("invoices"));
     }
+    // function to restore the soft deleted  invoices 
     public function unArchiveInvoices(Request $request){
         invoices::withTrashed()->where("id" , $request->id)->restore();
         return redirect("/invoices");
     }
 
-    // the print invoice section 
+    //  print invoice section 
     public function printInvoice($id){
         $invoice = invoices::where("id" , $id)->first();
         return view("invoices.printInvoice" , compact("invoice"));
@@ -67,76 +73,77 @@ class InvoicesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // store invoices and create its details and attachments 
     public function store(Request $request)
     {
      
         try{
 
-              
-       
-        $invoice = new invoices();
-        $invoice->invoice_number = Auth::user()->id.$request->section.$request->invoice_number;
-        $invoice->invoice_date = $request->invoice_date;
-        $invoice->due_date = $request->due_date;
-        $invoice->product = $request->product;
-        $invoice->section_id = $request->section;
-        $invoice->Amount_collection = $request->Amount_collection;
-        $invoice->Amount_commision = $request->Amount_commission;
-        $invoice->discoint = $request->discount;
-        $invoice->rate_vate = $request->rate_vate;
-        $invoice->value_vate = $request->value_vate;
-        $invoice->total = $request->total;
-        $invoice->status = "غير مدفوعه";
-        $invoice->value_status = 0;
-        $invoice->note = $request->note;
-        $invoice->user = Auth::user()->name;
-        $invoice->save();
-
-        $invoice_id = invoices::latest()->first()->id;
-     
-            //  create the details seciton 
-            $details = new InvoicesDetails();
-            $details->invoice_number = Auth::user()->id.$request->section.$request->invoice_number;
-            $details->invoice_id = $invoice_id;
-            $details->product = $request->product;
-            $details->Section = $request->section;
-            $details->status = 'غير مدفوعه';
-            $details->value_status = 2;
-            $details->note = $request->note;
-            $details->user = Auth::user()->name;
-            $details->save();
-
-            if($request->has("picture")){
                 
-            $image = $request->file("picture");
-            $file_name = $image->getClientOriginalName();
+        
+            $invoice = new invoices();
+            $invoice->invoice_number = Auth::user()->id.$request->section.$request->invoice_number;
+            $invoice->invoice_date = $request->invoice_date;
+            $invoice->due_date = $request->due_date;
+            $invoice->product = $request->product;
+            $invoice->section_id = $request->section;
+            $invoice->Amount_collection = $request->Amount_collection;
+            $invoice->Amount_commision = $request->Amount_commission;
+            $invoice->discoint = $request->discount;
+            $invoice->rate_vate = $request->rate_vate;
+            $invoice->value_vate = $request->value_vate;
+            $invoice->total = $request->total;
+            $invoice->status = "غير مدفوعه";
+            $invoice->value_status = 0;
+            $invoice->note = $request->note;
+            $invoice->user = Auth::user()->name;
+            $invoice->save();
+
+            $invoice_id = invoices::latest()->first()->id;
+        
+                //  create the details seciton 
+                $details = new InvoicesDetails();
+                $details->invoice_number = Auth::user()->id.$request->section.$request->invoice_number;
+                $details->invoice_id = $invoice_id;
+                $details->product = $request->product;
+                $details->Section = $request->section;
+                $details->status = 'غير مدفوعه';
+                $details->value_status = 2;
+                $details->note = $request->note;
+                $details->user = Auth::user()->name;
+                $details->save();
+
+                if($request->has("picture")){
+                    
+                $image = $request->file("picture");
+                $file_name = $image->getClientOriginalName();
 
 
-            $attachment = new InvoicesAttachment();
-            $attachment->invoice_number =  Auth::user()->id.$request->section.$request->invoice_number;
-            $attachment->invoice_id = $invoice_id;
-            $attachment->file_name = $file_name;
-            $attachment->Created_by = Auth::user()->name;
-            $attachment->save();
+                $attachment = new InvoicesAttachment();
+                $attachment->invoice_number =  Auth::user()->id.$request->section.$request->invoice_number;
+                $attachment->invoice_id = $invoice_id;
+                $attachment->file_name = $file_name;
+                $attachment->Created_by = Auth::user()->name;
+                $attachment->save();
 
-            $request->picture->move(public_path("attachments/".Auth::user()->id.$request->section.$request->invoice_number) , $file_name);
+                $request->picture->move(public_path("attachments/".Auth::user()->id.$request->section.$request->invoice_number) , $file_name);
 
 
             }
 
             
             session()->flash("success" , "the invoice added successfully");
-                
+
 
         }catch(Exception $e){
-            session()->flash("fail" , "the createtion field");
+            session()->flash("fail" , "the createtion field" . $e);
         }
 
         return redirect("/invoices")->with("success");
 
     }
 
-    // udpate the invoice status
+    // udpate the invoice status >> paid/unpaid
 
     public function udpate_status($id){
         
@@ -147,23 +154,28 @@ class InvoicesController extends Controller
        
 
     }
+    // update the payment method and create new invocie details with the changes
     public function update_payment(Request $request){
-        // return $request;
-        $invoice = invoices::find($request->id);
-        $invoice->value_status = $request->payment;
-        $invoice->status = $request->payment== 0 ? "غير مدفوعه" : "مدفوعه";
-        $invoice->save();
-        InvoicesDetails::create([
-            "invoice_number"=>Auth::user()->id.$invoice->section_id.$invoice->invoice_number,
-            "invoice_id" =>$request->id,
-            "product"=>$invoice->product,
-            "Section"=>$invoice->section_id,
-            "status"=> $request->payment== 0 ? "غير مدفوعه" : "مدفوعه",
-            "value_status"=>$request->payment,
-            "note"=>$invoice->note,
-            "user"=>Auth::user()->name,
-            "Payment_Date"=>$request->Payment_Date
-        ]);
+       try{
+            $invoice = invoices::find($request->id);
+            $invoice->value_status = $request->payment;
+            $invoice->status = $request->payment== 0 ? "غير مدفوعه" : "مدفوعه";
+            $invoice->save();
+            InvoicesDetails::create([
+                "invoice_number"=>Auth::user()->id.$invoice->section_id.$invoice->invoice_number,
+                "invoice_id" =>$request->id,
+                "product"=>$invoice->product,
+                "Section"=>$invoice->section_id,
+                "status"=> $request->payment== 0 ? "غير مدفوعه" : "مدفوعه",
+                "value_status"=>$request->payment,
+                "note"=>$invoice->note,
+                "user"=>Auth::user()->name,
+                "Payment_Date"=>$request->Payment_Date
+            ]);
+            session()->flash("success" , "the payment added successfully");
+       }catch(Exception $e){
+        session()->flash("field" , "the payment added field" . $e);
+       }
         
         
         return redirect("/invoices");
@@ -180,6 +192,7 @@ class InvoicesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    // edit the content of the invoices
     public function edit($id )
     {
         $invoice = invoices::where("id" , $id)->first();
@@ -215,35 +228,51 @@ class InvoicesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    // soft delete (archive) the invoices
     public function destroy(Request $request)
     {
-        invoices::destroy( $request->id);
+       try{
+            invoices::destroy( $request->id);
    
-        session()->flash("success" , "the invoice deleted successfully");
-    
+            session()->flash("success" , "the invoice deleted successfully");
+        
+        }catch(Exception $e){
+            session()->flash("field" , "the invoice deleted field" .$e);
+
+       }
+     
         return redirect("/invoices");
 
     }
+    // the force deleting to the invoices
     public function forceDelete(Request $request)
     {
         
-        $invoice = invoices::withTrashed()->where("id" , $request->id)->get();
+      
+        try{
+            $invoice = invoices::withTrashed()->where("id" , $request->id)->get();
 
 
-        $attachment = InvoicesAttachment::where("invoice_id" , $request->id)->first();
-        if(!empty($attachment->invoice_number)){
-            File::deleteDirectory(public_path("attachments/".$attachment->invoice_number));
-        }
+            $attachment = InvoicesAttachment::where("invoice_id" , $request->id)->first();
+            if(!empty($attachment->invoice_number)){
+                File::deleteDirectory(public_path("attachments/".$attachment->invoice_number));
+            }
+                
             
+            invoices::withTrashed()->where("id" , $request->id)->forceDelete();
+    
+    
+            session()->flash("success" , "the invoice deleted successfully");    
         
-        invoices::withTrashed()->where("id" , $request->id)->forceDelete();
+        }catch(Exception $e){
+            session()->flash("field" , "the invoice deleted field" .$e);
 
-
-        session()->flash("success" , "the invoice deleted successfully");
+       }
         return redirect("/invoices");
 
     }
 
+    // the ajax part to get the iproducts based on section in the invoices blade
     public function GetProduct($id){
         $products = DB::table("products")->where("section_id" , $id)->pluck("product_name" , "id");
         return json_encode($products);

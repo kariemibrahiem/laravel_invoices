@@ -31,6 +31,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // create new product based on the section id
     public function store(Request $request)
     {
         $product = new Product();
@@ -69,6 +70,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // update the product content
     public function update(Request $request)
     {
         try{
@@ -87,6 +89,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    // delete the product
     public function destroy(Request $request)
     {
         try{

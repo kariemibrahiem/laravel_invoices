@@ -12,6 +12,7 @@ class InvoicesDetailsController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // function to display the invoices details
     public function invoices_details($id)
     {
         $invoices =   invoices::where("id" , $id)->get();

@@ -30,22 +30,30 @@ class InvoicesAttachmentController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
+        // add attachment to an exst invoice
     
        try{
                 $image = $request->file("picture");
                 $file_name = $image->getClientOriginalName();
 
-                InvoicesAttachment::create([
-                    "file_name" => $file_name,
-                    "invoice_number" =>$request->invoice_number,
-                    "invoice_id" =>$request->invoice_id,
-                    "Created_by" => Auth::user()->name,
-                ]);
+                // InvoicesAttachment::create([
+                //     "file_name" => $file_name,
+                //     "invoice_number" =>$request->invoice_number,
+                //     "invoice_id" =>$request->invoice_id,
+                //     "Created_by" => Auth::user()->name,
+                // ]);
+                $invoice_attach = new InvoicesAttachment();
+                $invoice_attach->file_name = $file_name;
+                $invoice_attach->invoice_number = $request->invoice_number;
+                $invoice_attach->invoice_id = $request->invoice_id;
+                $invoice_attach->Created_by =  Auth::user()->name;
+
 
                 $request->picture->move(public_path("attachments/".$request->invoice_number ),$file_name);
+
+                session()->flash("success" , "the attachment added successfully");
        }catch(Exception $e){
-            return "$e";
+                session()->flash("field" , "the attachment added field");
        }
         return redirect('/invoices');
     }

@@ -336,8 +336,8 @@ class ComposerStaticInita7159c5237c3c2e75dbd1d23c85e732c
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -539,6 +539,7 @@ class ComposerStaticInita7159c5237c3c2e75dbd1d23c85e732c
         'App\\Models\\Section' => __DIR__ . '/../..' . '/app/Models/Section.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\invoices' => __DIR__ . '/../..' . '/app/Models/invoices.php',
+        'App\\Notifications\\addInvoices' => __DIR__ . '/../..' . '/app/Notifications/addInvoices.php',
         'App\\Notifications\\invocieNotify' => __DIR__ . '/../..' . '/app/Notifications/invocieNotify.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
