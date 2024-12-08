@@ -17,9 +17,13 @@ class addInvoiceMail extends Mailable
      * Create a new message instance.
      */
     public $id;
-    public function __construct($id)
+    public $user_name;
+    public $title;
+    public function __construct($id , $user_name , $title)
     {
         $this->id = $id;
+        $this->user_name = $user_name;
+        $this->title = $title;
         //
     }
 
@@ -39,9 +43,16 @@ class addInvoiceMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: "details.details/.$this->id",
+            // view: "details.details/.$this->id",
+            view:"mails.mail",
+            with: [
+                'id' => $this->id,
+                "name"=>$this->user_name,
+                "title"=>$this->title,
+            ]
         );
     }
+  
 
     /**
      * Get the attachments for the message.

@@ -6,7 +6,8 @@ use App\Models\InvoicesAttachment;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\addInvoiceMail;
 class InvoicesAttachmentController extends Controller
 {
     /**
@@ -30,7 +31,7 @@ class InvoicesAttachmentController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
+        // return $request;
     
        try{
                 $image = $request->file("picture");
@@ -44,8 +45,14 @@ class InvoicesAttachmentController extends Controller
                 ]);
 
                 $request->picture->move(public_path("attachments/".$request->invoice_number ),$file_name);
+                $msg = "adding new attachment";
+                Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->invoice_id , Auth::user()->name , $msg));
+
+                session()->flash("success" , "the attachment is add successfully");
        }catch(Exception $e){
-            return "$e";
+        session()->flash("field" , "the attachment is add field");
+            // return "$e";
+            return redirect('/invoices');
        }
         return redirect('/invoices');
     }

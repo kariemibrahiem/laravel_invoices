@@ -9,6 +9,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\addInvoiceMail;
+
+
+
 
 
 
@@ -54,6 +59,7 @@ Route::get("invoices_details/{id}" , [InvoicesDetailsController::class , "invoic
 // update the attachment in the invoices 
 Route::post("attachment" , [InvoicesAttachmentController::class , "store"])->name("attachment_store");
 
+Route::view("checkMail" , "mails.mail");
 
 
 Route::resource("sections" , SectionController::class);

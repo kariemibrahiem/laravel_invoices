@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Mail;
 use App\Mail\addInvoiceMail;
 use App\Models\invoices;
 use App\Models\InvoicesAttachment;
@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,6 +31,9 @@ class InvoicesController extends Controller
     // the paid invoice index to dispaly
     public function paidInvoices(){
         $invoices = invoices::where("value_status" ,1)->get();
+
+      
+
         return view("invoices.paidInvoices" , compact("invoices"));
     }
     // the unpaid invoice index to dispaly
@@ -45,13 +47,26 @@ class InvoicesController extends Controller
         return view("invoices.archiveInvoices" , compact("invoices"));
     }
     public function unArchiveInvoices(Request $request){
+        
+        // restoring part
         invoices::withTrashed()->where("id" , $request->id)->restore();
+        
+        // msgs part 
+        $msg ="that the invooice is unarchived";
+        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        session()->flash("success" , "the invoice unarchived successfully");
+
         return redirect("/invoices");
     }
 
     // the print invoice section 
     public function printInvoice($id){
         $invoice = invoices::where("id" , $id)->first();
+
+        $msg ="that the invooice is printed";
+        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($id , Auth::user()->name , $msg));
+        session()->flash("success" , "the invoice printed successfully");
+
         return view("invoices.printInvoice" , compact("invoice"));
     }
 
@@ -123,8 +138,8 @@ class InvoicesController extends Controller
 
 
             }
-
-            
+            $msg ="adding new invooice";
+            Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($invoice_id , Auth::user()->name , $msg));
             session()->flash("success" , "the invoice added successfully");
                 
 
@@ -165,6 +180,8 @@ class InvoicesController extends Controller
             "Payment_Date"=>$request->Payment_Date
         ]);
         
+        $msg ="the invooice paid";
+        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         
         return redirect("/invoices");
     }
@@ -208,6 +225,8 @@ class InvoicesController extends Controller
                 "note"=>$request->note,
                 "user"=>Auth::user()->name,
             ]);
+            $msg ="that the invooice is edited";
+            Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
             session()->flash("success" , "the invoice edited successfully");
             return redirect("/invoices");
     }
@@ -219,8 +238,9 @@ class InvoicesController extends Controller
     {
         invoices::destroy( $request->id);
    
-        session()->flash("success" , "the invoice deleted successfully");
-    
+        $msg ="that the invooice is archived";
+        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        session()->flash("success" , "the invoice archived successfully");
         return redirect("/invoices");
 
     }
@@ -238,7 +258,8 @@ class InvoicesController extends Controller
         
         invoices::withTrashed()->where("id" , $request->id)->forceDelete();
 
-
+        $msg ="that the invooice is deleted";
+        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice deleted successfully");
         return redirect("/invoices");
 
