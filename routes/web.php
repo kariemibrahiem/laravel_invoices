@@ -7,7 +7,9 @@ use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\InvoicesDetailsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
+use App\Mail\AddInvoiceMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\addInvoiceMail;
@@ -68,8 +70,8 @@ Route::resource("/products" , ProductController::class);
 // 
 Route::get("/section/{id}" , [InvoicesController::class , "GetProduct"]);
 
-Route::get("/{page}" , [AdminController_1::class , "index"])->middleware("auth");
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get("/{page}" , [AdminController_1::class , "index"])->middleware("auth");

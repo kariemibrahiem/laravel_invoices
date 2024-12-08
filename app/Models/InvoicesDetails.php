@@ -8,6 +8,7 @@ class InvoicesDetails extends Model
 {
     protected $guarded = [];
 
+    // relation between the details and invoices
     public function invoice(){
         return $this->belongsTo(invoices::class);
     }
