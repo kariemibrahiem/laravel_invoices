@@ -73,7 +73,7 @@
 												<th class="wd-15p border-bottom-0"> اسم المنتج </th>
 												<th class="wd-15p border-bottom-0"> الوصف </th>
 												<th class="wd-15p border-bottom-0">اسم القسم</th>
-												@if (Auth::user()->hasRole("admin"))
+												@if (Auth::user()->hasRole("admin") )
 													
 													<th class="wd-15p border-bottom-0"> العمليات</th>
 												@endif
@@ -86,7 +86,7 @@
 													<td>{{$product->id}}</td>
 													<td> {{$product->product_name}}</td>
 													<td>{{$product->description}} </td>
-													@if ({{ Auth::user()->hasRole("admin") }})
+													@if (Auth::user()->hasRole("admin") )
 														
 														<td>
 															<div class="row">
