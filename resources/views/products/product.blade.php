@@ -73,7 +73,10 @@
 												<th class="wd-15p border-bottom-0"> اسم المنتج </th>
 												<th class="wd-15p border-bottom-0"> الوصف </th>
 												<th class="wd-15p border-bottom-0">اسم القسم</th>
-												<th class="wd-15p border-bottom-0"> العمليات</th>
+												@if (Auth::user()->hasRole("admin"))
+													
+													<th class="wd-15p border-bottom-0"> العمليات</th>
+												@endif
 												<th class="wd-15p border-bottom-0"> </th>
 											</tr>
 										</thead>
@@ -83,21 +86,24 @@
 													<td>{{$product->id}}</td>
 													<td> {{$product->product_name}}</td>
 													<td>{{$product->description}} </td>
-													<td>
-														<div class="row">
-
-															<a class="modal-effect btn btn-outline-success" data-effect="effect-scale"
-															data-id="{{ $product->id }}" data-product_name="{{ $product->product_name }}"
-                                                            data-section_id="{{$product->section_id}}"
-															data-description="{{ $product->description }}" data-toggle="modal" href="#exampleModal2"
-															title="تعديل"> edit<i class="las la-pen"></i></a>
-
-															<a class="modal-effect btn btn-outline-danger " data-effect="effect-scale"
-															data-id="{{ $product->id }}"
-															data-product_name="{{$product->product_name}}" data-toggle="modal" href="#modaldemo9"
-															title="تعديل"> delete<i class="las la-pen"></i></a>
-														</div>
-													</td>
+													@if ({{ Auth::user()->hasRole("admin") }})
+														
+														<td>
+															<div class="row">
+																
+																<a class="modal-effect btn btn-outline-success" data-effect="effect-scale"
+																data-id="{{ $product->id }}" data-product_name="{{ $product->product_name }}"
+																data-section_id="{{$product->section_id}}"
+																data-description="{{ $product->description }}" data-toggle="modal" href="#exampleModal2"
+																title="تعديل"> edit<i class="las la-pen"></i></a>
+																
+																<a class="modal-effect btn btn-outline-danger " data-effect="effect-scale"
+																data-id="{{ $product->id }}"
+																data-product_name="{{$product->product_name}}" data-toggle="modal" href="#modaldemo9"
+																title="تعديل"> delete<i class="las la-pen"></i></a>
+															</div>
+														</td>
+													@endif
 													<td> </td>
 												</tr>
 											@endforeach

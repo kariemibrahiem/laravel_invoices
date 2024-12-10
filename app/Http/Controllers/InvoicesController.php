@@ -37,9 +37,6 @@ class InvoicesController extends Controller
     // the paid invoice index to dispaly
     public function paidInvoices(){
         $invoices = invoices::where("value_status" ,1)->get();
-
-      
-
         return view("invoices.paidInvoices" , compact("invoices"));
     }
 
@@ -73,8 +70,8 @@ class InvoicesController extends Controller
         $invoice = invoices::where("id" , $id)->first();
 
         $msg ="that the invooice is printed";
-        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($id , Auth::user()->name , $msg));
-        session()->flash("success" , "the invoice printed successfully");
+        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($id , Auth::user()->name , $msg));
+        // session()->flash("success" , "the invoice printed successfully");
 
         return view("invoices.printInvoice" , compact("invoice"));
     }
@@ -195,8 +192,8 @@ class InvoicesController extends Controller
         session()->flash("field" , "the payment added field" . $e);
        }
         
-        $msg ="the invooice paid";
-        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        // $msg ="the invooice paid";
+        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         
         return redirect("/invoices");
     }
@@ -241,8 +238,8 @@ class InvoicesController extends Controller
                 "note"=>$request->note,
                 "user"=>Auth::user()->name,
             ]);
-            $msg ="that the invooice is edited";
-            Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+            // $msg ="that the invooice is edited";
+            // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
             session()->flash("success" , "the invoice edited successfully");
             return redirect("/invoices");
     }
@@ -286,8 +283,8 @@ class InvoicesController extends Controller
         
         invoices::withTrashed()->where("id" , $request->id)->forceDelete();
 
-        $msg ="that the invooice is deleted";
-        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        // $msg ="that the invooice is deleted";
+        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice deleted successfully");
         return redirect("/invoices");
 

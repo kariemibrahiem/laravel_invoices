@@ -14,6 +14,7 @@ class invoices extends Model
     // protected $fillable = ["invoices_number", "value_status" , "status" , "note" , "Total" , "Value_VAT" , "Rate_VAT" , "Discount" , "Amount_Commission" , "Amount_collection" , "product" , "Section" , "Due_date" , "invoice_Date" ] ;
     
     Protected $guarded = [];
+    
     // the relation between invoice and sectino 
     public function section(){
         return $this->belongsTo(Section::class);
