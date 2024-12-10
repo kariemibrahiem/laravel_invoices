@@ -125,6 +125,9 @@
 									<button class="btn btn-danger  float-left mt-3 mr-2" id="print_Button" onclick="printDiv()"> <i
                                         class="mdi mdi-printer ml-1"></i>طباعة</button>
 									
+                                        <form id="GoInvoices" action="/invoices">
+
+                                        </form>
 								</div>
 							</div>
 						</div>
@@ -150,6 +153,7 @@
             window.print();
             document.body.innerHTML = originalContents;
             location.reload();
+            document.getElementById("GoInvoices").submit();
         }
         
         </script>

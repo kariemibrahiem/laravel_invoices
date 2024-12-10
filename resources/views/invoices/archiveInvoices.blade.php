@@ -87,7 +87,7 @@
                                           <tr>
                                             <th class="wd-15p border-bottom-0">{{$i}} </th>
                                             <th class="wd-15p border-bottom-0">{{$invoice->invoice_number}} </th>
-                                            <th title="view the invoice detials" onclick="document.getElementById('invoices_details').submit();" style="cursor: pointer" class="wd-25p cursor-pointer border-bottom-0"><a href="{{route("invoices_details" , $invoice->id)}}">{{$invoice->section->section_name}}</a></th>
+                                            <th title="view the invoice detials" class="wd-25p cursor-pointer border-bottom-0"><a >{{$invoice->section->section_name}}</a></th>
                                             <th class="wd-10p border-bottom-0">{{$invoice->product}}</th>
                                             <th class="wd-25p border-bottom-0"> {{$invoice->total}} </th>
                                             
@@ -173,15 +173,17 @@
                     <button class="btn btn-primary" type="submit"> unarchive </button>
                 </form>
             </div>
-            <div class="col-6">
-
-                <form action="{{route('invoicesForceDelete.forceDelete')}}">
-                    <div class="form-group">
-                        <input type="hidden" class="form-control" name="id">
-                    </div>
-                    <button class="btn btn-danger bold" type="submit"> force delete </button>
-                </form>
-            </div>
+            @if (Auth::user()->hasRole(["super_admin"]))
+                <div class="col-6">
+                    
+                    <form action="{{route('invoicesForceDelete.forceDelete')}}">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" name="id">
+                        </div>
+                        <button class="btn btn-danger bold" type="submit"> force delete </button>
+                    </form>
+                </div>
+            @endif
         </div>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 

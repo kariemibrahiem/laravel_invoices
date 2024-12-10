@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Storage;
 
 class InvoicesController extends Controller
 {
+    public function __construct(){
+        $this->middleware("auth");
+    }
     /**
      * Display a listing of the resource.
      */
@@ -57,9 +60,9 @@ class InvoicesController extends Controller
         // restoring part
         invoices::withTrashed()->where("id" , $request->id)->restore();
         
-        // msgs part 
-        $msg ="that the invooice is unarchived";
-        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        // // msgs part 
+        // $msg ="that the invooice is unarchived";
+        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice unarchived successfully");
 
         return redirect("/invoices");
@@ -145,8 +148,8 @@ class InvoicesController extends Controller
 
 
             }
-            $msg ="adding new invooice";
-            Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($invoice_id , Auth::user()->name , $msg));
+            // $msg ="adding new invooice";
+            // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($invoice_id , Auth::user()->name , $msg));
             session()->flash("success" , "the invoice added successfully");
 
 
@@ -253,9 +256,12 @@ class InvoicesController extends Controller
        try{
             invoices::destroy( $request->id);
    
-        $msg ="that the invooice is archived";
-        Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        // $msg ="that the invooice is archived";
+        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice archived successfully");
+       }catch(Exception $e){
+        session()->flash("fail" , "the createtion field" . $e);
+        }
         return redirect("/invoices");
 
     }
@@ -268,10 +274,14 @@ class InvoicesController extends Controller
             $invoice = invoices::withTrashed()->where("id" , $request->id)->get();
 
 
-        $attachment = InvoicesAttachment::where("invoice_id" , $request->id)->first();
-        if(!empty($attachment->invoice_number)){
-            File::deleteDirectory(public_path("attachments/".$attachment->invoice_number));
+            $attachment = InvoicesAttachment::where("invoice_id" , $request->id)->first();
+            if(!empty($attachment->invoice_number)){
+                File::deleteDirectory(public_path("attachments/".$attachment->invoice_number));
+            }
+        }catch(Exception $e){
+            session()->flash("fail" , "the createtion field" . $e);
         }
+
             
         
         invoices::withTrashed()->where("id" , $request->id)->forceDelete();

@@ -75,6 +75,7 @@
                                                 <th class="wd-25p border-bottom-0"> الحاله </th>
                                                 <th class="wd-25p border-bottom-0"> ملاحظات </th>
                                                 <th class="wd-25p border-bottom-0"> الاجمالي </th>
+                                               
                                             </tr>
                                         </thead>
 										<tbody>
@@ -95,19 +96,21 @@
                                             <th class="wd-25p border-bottom-0" > {{$invoice->note != null ? $invoice->note : "لا يوجد"}} </th>
                                             <th class="wd-25p border-bottom-0"> {{$invoice->total}} </th>
                                             <th>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                      proccesses
-                                                    </button>
-                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                      <a  class="dropdown-item btn" data-toggle="modal" data-target="#exampleModal" data-whatever="{{$invoice->id}}">delete</a>
-
-                                                      <a class="dropdown-item btn" href="{{route("invoicesEdit.edit" , $invoice->id)}}">edit</a>
-                                                      <a class="dropdown-item btn" href="{{route("printInvoice" , $invoice->id)}}">print</a>
-                                                      
-                                                      
+                                                @if (Auth::user()->hasRole(["admin"]))
+                                                
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            proccesses
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <a  class="dropdown-item btn" data-toggle="modal" data-target="#exampleModal" data-whatever="{{$invoice->id}}">delete</a>
+                                                            
+                                                            <a class="dropdown-item btn" href="{{route("invoicesEdit.edit" , $invoice->id)}}">edit</a>
+                                                            <a class="dropdown-item btn" href="{{route("printInvoice" , $invoice->id)}}">print</a>
+                                                     
+                                                        </div>
                                                     </div>
-                                                  </div>
+                                                @endif
                                             </th>
                                         </tr>
                                               
@@ -150,6 +153,7 @@
 <script src="{{URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js')}}"></script>
 <!--Internal  Datatable js -->
 <script src="{{URL::asset('assets/js/table-data.js')}}"></script>
+
 <script>
     $('#exampleModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) // Button that triggered the modal
@@ -184,16 +188,18 @@
                     <button class="btn btn-danger" type="submit"> archive </button>
                 </form>
             </div>
-            <div class="col-6">
-
-                <form action="{{route('invoicesForceDelete.forceDelete')}}">
-                    <div class="form-group">
-                        <input type="hidden" class="form-control" name="id">
-                    </div>
-                    <button class="btn btn-danger" type="submit"> force delete </button>
-                </form>
+            @if (Auth::user()->hasRole(["super_admin"]))
+                <div class="col-6">
+                
+                    <form action="{{route('invoicesForceDelete.forceDelete')}}">
+                            <div class="form-group">
+                                <input type="hidden" class="form-control" name="id">
+                            </div>
+                            <button class="btn btn-danger" type="submit"> force delete </button>
+                    </form>
+                </div>
+            @endif
             </div>
-        </div>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
       </div>

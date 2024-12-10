@@ -182,15 +182,17 @@
                     <button class="btn btn-danger" type="submit"> archive </button>
                 </form>
             </div>
-            <div class="col-6">
-
-                <form action="{{route('invoicesForceDelete.forceDelete')}}">
-                    <div class="form-group">
-                        <input type="hidden" class="form-control" name="id">
-                    </div>
-                    <button class="btn btn-danger" type="submit"> force delete </button>
-                </form>
-            </div>
+            @if (Auth::user()->hasRole(["super_admin"]))
+                <div class="col-6">
+                    
+                    <form action="{{route('invoicesForceDelete.forceDelete')}}">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" name="id">
+                        </div>
+                        <button class="btn btn-danger" type="submit"> force delete </button>
+                    </form>
+                </div>
+            @endif
         </div>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 

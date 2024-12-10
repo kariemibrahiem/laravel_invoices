@@ -136,17 +136,19 @@
                                         </thead>
                                         <tbody>
                                             <h4>add attachment</h4>
-                                            @foreach ($invoices as $invoice)
-                                                    <form method="POST" class="form m-5" action="{{route("attachment_store")}}" enctype="multipart/form-data">
-                                                        @method("POST")
-                                                        @csrf
-                                                        <input class="form-control" type="file" name="picture">
-                                                        <input type="hidden" name="invoice_id" value="{{$invoice->id}}">
-                                                        <input type="hidden" name="invoice_number" value="{{$invoice->invoice_number}}">
-                    
-                                                        <button class="btn form-control mt-4 btn-primary" type="submit">send file</button>
-                                                    </form>
-                                            @endforeach
+                                            @if (Auth::user()->hasRole(["admin"]))
+                                                @foreach ($invoices as $invoice)
+                                                <form method="POST" class="form m-5" action="{{route("attachment_store")}}" enctype="multipart/form-data">
+                                                    @method("POST")
+                                                    @csrf
+                                                    <input class="form-control" type="file" name="picture">
+                                                    <input type="hidden" name="invoice_id" value="{{$invoice->id}}">
+                                                    <input type="hidden" name="invoice_number" value="{{$invoice->invoice_number}}">
+                                                    
+                                                    <button class="btn form-control mt-4 btn-primary" type="submit">send file</button>
+                                                </form>
+                                                @endforeach
+                                            @endif
                                             
                                         @foreach ($invoice_attachment as $attachment)
                                       <tr>

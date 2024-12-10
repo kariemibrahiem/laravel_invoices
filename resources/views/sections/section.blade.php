@@ -58,9 +58,11 @@
 					<div class="col-xl-12">
 						<div class="card mg-b-20">
 							<div class="card-header pb-0">
-								<div class="d-flex justify-content-between">
-									<h4 class="card-title mg-b-0"><a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo1">انشاء قسم </a></h4>
-								</div>
+								@if (Auth::user()->hasRole(["admin"]))
+									<div class="d-flex justify-content-between">
+										<h4 class="card-title mg-b-0"><a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo1">انشاء قسم </a></h4>
+									</div>
+								@endif
 							</div>
 							<div class="card-body">
 								<div class="table-responsive">

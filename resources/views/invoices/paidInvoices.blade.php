@@ -99,6 +99,7 @@
                                                       proccesses
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        
                                                       <a  class="dropdown-item" data-toggle="modal" data-target="#exampleModal" data-whatever="{{$invoice->id}}">delete</a>
 
                                                       <a class="dropdown-item" href="{{route("invoicesEdit.edit" , $invoice->id)}}">edit</a>
@@ -182,15 +183,17 @@ $('#exampleModal').on('show.bs.modal', function (event) {
                     <button class="btn btn-danger" type="submit"> archive </button>
                 </form>
             </div>
-            <div class="col-6">
-
-                <form action="{{route('invoicesForceDelete.forceDelete')}}">
-                    <div class="form-group">
-                        <input type="hidden" class="form-control" name="id">
-                    </div>
-                    <button class="btn btn-danger" type="submit"> force delete </button>
-                </form>
-            </div>
+            @if (Auth::user()->hasRole(["super_admin"]))
+                <div class="col-6">
+                    
+                    <form action="{{route('invoicesForceDelete.forceDelete')}}">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" name="id">
+                        </div>
+                        <button class="btn btn-danger" type="submit"> force delete </button>
+                    </form>
+                </div>
+            @endif
         </div>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
