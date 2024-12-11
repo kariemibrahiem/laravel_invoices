@@ -39,6 +39,7 @@ class PermissionController extends Controller
             Permission::create([
                 'name' =>$request->permission,
             ]);
+            
             session()->flash("status" , "success to create");
        }catch(Exception $e){
             session()->flash("status" , "field to create");

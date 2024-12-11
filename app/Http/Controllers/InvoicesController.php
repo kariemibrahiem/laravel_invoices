@@ -18,6 +18,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+// stripe links 
+use Stripe\Stripe;
+use Stripe\Charge;
+use Stripe\Exception\ApiErrorException;
+
 
 class InvoicesController extends Controller
 {
@@ -58,8 +63,8 @@ class InvoicesController extends Controller
         invoices::withTrashed()->where("id" , $request->id)->restore();
         
         // // msgs part 
-        // $msg ="that the invooice is unarchived";
-        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        $msg ="that the invooice is unarchived";
+        Mail::to(Auth::user()->email)->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice unarchived successfully");
 
         return redirect("/invoices");
@@ -70,8 +75,8 @@ class InvoicesController extends Controller
         $invoice = invoices::where("id" , $id)->first();
 
         $msg ="that the invooice is printed";
-        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($id , Auth::user()->name , $msg));
-        // session()->flash("success" , "the invoice printed successfully");
+        Mail::to(Auth::user()->email)->send(new addInvoiceMail($id , Auth::user()->name , $msg));
+        session()->flash("success" , "the invoice printed successfully");
 
         return view("invoices.printInvoice" , compact("invoice"));
     }
@@ -110,6 +115,7 @@ class InvoicesController extends Controller
             $invoice->total = $request->total;
             $invoice->status = "غير مدفوعه";
             $invoice->value_status = 0;
+            $invoice->payment_method = $request->payment_method;
             $invoice->note = $request->note;
             $invoice->user = Auth::user()->name;
             $invoice->save();
@@ -145,8 +151,8 @@ class InvoicesController extends Controller
 
 
             }
-            // $msg ="adding new invooice";
-            // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($invoice_id , Auth::user()->name , $msg));
+            $msg ="adding new invooice";
+            Mail::to(Auth::user()->email)->send(new addInvoiceMail($invoice_id , Auth::user()->name , $msg));
             session()->flash("success" , "the invoice added successfully");
 
 
@@ -175,6 +181,7 @@ class InvoicesController extends Controller
             $invoice = invoices::find($request->id);
             $invoice->value_status = $request->payment;
             $invoice->status = $request->payment== 0 ? "غير مدفوعه" : "مدفوعه";
+            $invoice->payment_method = $request->payment_method;
             $invoice->save();
             InvoicesDetails::create([
                 "invoice_number"=>Auth::user()->id.$invoice->section_id.$invoice->invoice_number,
@@ -192,8 +199,8 @@ class InvoicesController extends Controller
         session()->flash("field" , "the payment added field" . $e);
        }
         
-        // $msg ="the invooice paid";
-        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        $msg ="the invooice paid";
+        Mail::to(Auth::user()->email)->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         
         return redirect("/invoices");
     }
@@ -235,14 +242,16 @@ class InvoicesController extends Controller
                 "total"=>$request->total,
                 "status"=>"غير مدفوعه",
                 "value_status"=>2, 
+                "payment_method" => $request->payment_method,
                 "note"=>$request->note,
                 "user"=>Auth::user()->name,
             ]);
-            // $msg ="that the invooice is edited";
-            // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+            $msg ="that the invooice is edited";
+            Mail::to(Auth::user()->email)->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
             session()->flash("success" , "the invoice edited successfully");
             return redirect("/invoices");
     }
+  
 
     /**
      * Remove the specified resource from storage.
@@ -253,8 +262,8 @@ class InvoicesController extends Controller
        try{
             invoices::destroy( $request->id);
    
-        // $msg ="that the invooice is archived";
-        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        $msg ="that the invooice is archived";
+        Mail::to(Auth::user()->email)->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice archived successfully");
        }catch(Exception $e){
         session()->flash("fail" , "the createtion field" . $e);
@@ -283,8 +292,8 @@ class InvoicesController extends Controller
         
         invoices::withTrashed()->where("id" , $request->id)->forceDelete();
 
-        // $msg ="that the invooice is deleted";
-        // Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
+        $msg ="that the invooice is deleted";
+        Mail::to(Auth::user()->email)->send(new addInvoiceMail($request->id , Auth::user()->name , $msg));
         session()->flash("success" , "the invoice deleted successfully");
         return redirect("/invoices");
 
@@ -295,4 +304,61 @@ class InvoicesController extends Controller
         $products = DB::table("products")->where("section_id" , $id)->pluck("product_name" , "id");
         return json_encode($products);
     }
+
+
+    // payment form 
+    public function paymentForm($id){
+        $invoice = invoices::where("id" , $id)->first();
+        return view("invoices.payment" , compact("invoice"));
+    }
+
+// payment processes
+    public function processPayment(Request $request, $invoiceId)
+        {
+            // return $invoiceId;
+            $invoice = invoices::findOrFail($invoiceId);
+
+            // Get the stripe token from the request
+            $stripeToken = $request->input('stripeToken');
+
+            Stripe::setApiKey(config('services.stripe.secret'));
+
+            try {
+                // Create the charge
+                $charge = Charge::create([
+                    'amount' => 1 *100, // amount in cents
+                    'currency' => 'usd', // or your preferred currency
+                    'description' => 'Invoice Payment',
+                    'source' => $stripeToken,
+                ]);
+
+                // Update the invoice with payment info
+                $invoice->update([
+                    'status' => 'paid',
+                    'payment_method' => 'Stripe',
+                    'stripe_charge_id' => $charge->id,
+                ]);
+
+                $invoice->value_status = 1;
+                $invoice->save();
+                session()->flash("success" , "the payment payed successfully");
+
+                session()->flash("success" , "the payment payed successfully");
+                return redirect("/invoices");
+                
+           } catch (ApiErrorException $e) {
+                // session()->flash("field" , "the payment payed field");
+                // return redirect("/invoices");
+                \Log::error('Stripe Payment Error: ' . $e->getMessage());
+
+                // Return error with message to user
+                session()->flash("field", "Payment failed: " . $e->getMessage());
+                return redirect("/invoices");
+                
+            }
+            return redirect("/invoices");
+        }
+
+
 }
+

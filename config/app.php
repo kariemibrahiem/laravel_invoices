@@ -77,6 +77,7 @@ return [
     | set to any locale for which you plan to have translation strings.
     |
     */
+    
 
     'locale' => env('APP_LOCALE', 'en'),
 
@@ -103,7 +104,18 @@ return [
         ...array_filter(
             explode(',', env('APP_PREVIOUS_KEYS', ''))
         ),
+        // Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
+
     ],
+  
+    
+
+    // 'providers' => [
+    // // Other service providers...
+
+    //     Fx3costa\PackageName\PackageServiceProvider::class,
+    // ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -121,6 +133,7 @@ return [
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        
     ],
 
 ];

@@ -60,7 +60,7 @@
 							<div class="card-header pb-0">
 								@if (Auth::user()->hasRole(["admin"]))
 									<div class="d-flex justify-content-between">
-										<h4 class="card-title mg-b-0"><a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo1">انشاء قسم </a></h4>
+										<h4 class="card-title mg-b-0"><a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo1">انشاء بنك </a></h4>
 									</div>
 								@endif
 							</div>
@@ -70,7 +70,7 @@
 										<thead>
 											<tr>
 												<th class="wd-5p border-bottom-0">#</th>
-												<th class="wd-15p border-bottom-0"> اسم القسم </th>
+												<th class="wd-15p border-bottom-0"> اسم البنك </th>
 												<th class="wd-15p border-bottom-0">الوصف</th>
 												@if (Auth::user()->hasRole("admin"))
 													
@@ -142,7 +142,7 @@
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">تعديل القسم</h5>
+									<h5 class="modal-title" id="exampleModalLabel">تعديل البنك</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
@@ -154,7 +154,7 @@
 										{{csrf_field()}}
 										<div class="form-group">
 											<input type="hidden" name="id" id="id" value="">
-											<label for="recipient-name" class="col-form-label">اسم القسم:</label>
+											<label for="recipient-name" class="col-form-label">اسم البنك:</label>
 											<input class="form-control" name="section_name" id="section_name" type="text">
 										</div>
 										<div class="form-group">
@@ -175,7 +175,7 @@
 					<div class="modal-dialog modal-dialog-centered" role="document">
 						<div class="modal-content modal-content-demo">
 							<div class="modal-header">
-								<h6 class="modal-title">حذف القسم</h6><button aria-label="Close" class="close" data-dismiss="modal"
+								<h6 class="modal-title">حذف البنك</h6><button aria-label="Close" class="close" data-dismiss="modal"
 																			type="button"><span aria-hidden="true">&times;</span></button>
 							</div>
 							<form action="sections/destroy" method="post">

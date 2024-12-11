@@ -56,7 +56,7 @@ class InvoicesAttachmentController extends Controller
 
                 $request->picture->move(public_path("attachments/".$request->invoice_number ),$file_name);
                 $msg = "adding new attachment";
-                Mail::to("kariemibrahiem110@gmail.com")->send(new addInvoiceMail($request->invoice_id , Auth::user()->name , $msg));
+                Mail::to(Auth::user()->email)->send(new addInvoiceMail($request->invoice_id , Auth::user()->name , $msg));
 
                 session()->flash("success" , "the attachment is add successfully");
        }catch(Exception $e){

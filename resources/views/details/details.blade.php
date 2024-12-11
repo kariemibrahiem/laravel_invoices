@@ -110,7 +110,7 @@
                                         <th class="wd-15p border-bottom-0">{{$invoice->invoice_number}} </th>
                                        
                                         <th class="wd-10p border-bottom-0">{{$invoice->user}}</th>
-                                        <th class="wd-15p border-bottom-0">{{$invoice->Payment_Date}} </th>
+                                        <th class="wd-15p border-bottom-0">{{$invoice->payment_method}} </th>
                                        
                                         <th  class="   {{($invoice->Value_Status) == 0 ? "text-danger" : "text-success"}}"> {{$invoice->Value_Status == 0 ? " غير مدفوعه " : "مدفوعه"}}</th>
                                        

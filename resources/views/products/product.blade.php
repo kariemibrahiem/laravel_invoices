@@ -14,7 +14,7 @@
 				<div class="breadcrumb-header justify-content-between">
 					<div class="my-auto">
 						<div class="d-flex">
-							<h4 class="content-title mb-0 my-auto">الاعدادات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/  المنتجات</span>
+							<h4 class="content-title mb-0 my-auto">الاعدادات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/  الخدمات</span>
 							<div class="d-flex flex-column justify-content-center">
 								@if(session()->has("success"))
 									<div class="alert text-center alert-success alert-dismissible">
@@ -60,7 +60,7 @@
 							<div class="card-header pb-0">
 								@if (Auth::user()->hasRole(["admin"]))
 									<div class="d-flex justify-content-between">
-										<h4 class="card-title mg-b-0"><a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo1">انشاء منتج- </a></h4>
+										<h4 class="card-title mg-b-0"><a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo1">انشاء خدمه- </a></h4>
 									</div>
 								@endif
 							</div>
@@ -70,7 +70,7 @@
 										<thead>
 											<tr>
 												<th class="wd-5p border-bottom-0">#</th>
-												<th class="wd-15p border-bottom-0"> اسم المنتج </th>
+												<th class="wd-15p border-bottom-0"> اسم الخدمه </th>
 												<th class="wd-15p border-bottom-0"> الوصف </th>
 												<th class="wd-15p border-bottom-0">اسم القسم</th>
 												@if (Auth::user()->hasRole("admin") )
@@ -164,7 +164,7 @@
 										{{csrf_field()}}
 										<div class="form-group">
 											<input type="hidden" name="id" id="id" value="">
-											<label for="recipient-name" class="col-form-label">اسم المنتج:</label>
+											<label for="recipient-name" class="col-form-label">اسم الخدمه:</label>
 											<input class="form-control" name="product_name" id="product_name" type="text">
 										</div>
                                         <div class="form-group">

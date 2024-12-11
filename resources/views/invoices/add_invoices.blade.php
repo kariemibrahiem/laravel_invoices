@@ -144,7 +144,16 @@
                             </div>
                         </div>
 
+
                         {{-- 5 --}}
+                                <label  class="bg-success pl-3 pr-3 rounded mt-4" for="payment_method">Payment Method</label>
+                                <select class="form-control" name="payment_method" id="payment_method">
+                                    <option value="cash">Cash</option>
+                                    <option value="credit_card">Credit Card</option>
+                                    <option value="bank_transfer">Bank Transfer</option>
+                                    <option value="paypal">PayPal</option>
+                                </select>
+
                         <div class="row">
                             <div class="col">
                                 <label for="exampleTextarea">ملاحظات</label>

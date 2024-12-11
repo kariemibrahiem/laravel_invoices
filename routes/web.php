@@ -88,6 +88,12 @@ Route::get("paidInvoices" , [InvoicesController::class , "paidInvoices"])->name(
 // the paid invoices 
 Route::get("unpaidInvoices" , [InvoicesController::class , "unpaidInvoices"])->name("unpaidInvoices");
 
+// payment form 
+Route::get("invoices/paymentForm/{id}" , [InvoicesController::class , "paymentForm"])->name("invoices.paymentForm");
+// payment method 
+Route::post('/invoice/{invoiceId}/pay', [InvoicesController::class, 'processPayment'])->name('invoices.processPayment');
+
+
 
 
 

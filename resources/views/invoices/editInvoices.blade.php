@@ -152,6 +152,13 @@
                                 <textarea class="form-control" value="{{$invoice->note}}" id="exampleTextarea" name="note" rows="3"></textarea>
                             </div>
                         </div><br>
+                        <label  class="bg-success pl-3 pr-3 rounded mt-4" for="payment_method">Payment Method</label>
+                        <select class="form-control mb-3" name="payment_method" id="payment_method">
+                            <option value="cash">Cash</option>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="paypal">PayPal</option>
+                        </select>
 
                         {{-- <p class="text-danger">* صيغة المرفق pdf, jpeg ,.jpg , png </p>
                         <h5 class="card-title">المرفقات</h5>
