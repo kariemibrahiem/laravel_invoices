@@ -14,7 +14,7 @@ class productSeeder extends Seeder
     public function run(): void
     {
         Product::create([
-            "product_name"=>"section_name",
+            "product_name"=>"loyen 1",
             "description"=>"the desc of section",
             "section_id"=>1
         ]);

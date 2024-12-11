@@ -14,7 +14,7 @@ class sectionSeeder extends Seeder
     public function run(): void
     {
         Section::create([
-            "section_name"=>"section_name",
+            "section_name"=>"national bank",
             "description"=>"the desc of section",
             "created_by"=>"kariem"
         ]);
