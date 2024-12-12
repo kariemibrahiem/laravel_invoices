@@ -66,8 +66,10 @@
 												@foreach ($user->getRoleNames() as $item)
 													<p class="bg-primary rounded m-1 pl-1 pr-1">{{ $item != null ?  $item  : "don't " }}</p>
 												@endforeach
-											</th>
 												
+											</th>
+											@if (Auth::user()->email != $user->email)
+											
 												<th><a title="change the invoice status" href={{route("userStatus" , $user->id) }} >{{$user->status == 0 ? " غير مفعل " : "مفعل"}}</a></th>
 												<th>
 													<a  class="dropdown-item btn" data-toggle="modal" data-target="#exampleModal" data-whatever="{{$user->id}}">delete</a>
@@ -76,6 +78,7 @@
 												<form action="users.update_status" id="update_status">
 													<input type="hidden" name="id" value="{{ $user->id }}">
 												</form>
+											@endif
 											</tr>
                                                   
                                               @endforeach
