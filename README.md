@@ -1,6 +1,8 @@
 
 # laravel_invoices
 ## Hello to invoices project
+###drive link for video and documentations 
+: https://drive.google.com/drive/folders/14kuJfJA-C89P5Xwhjca3BUEAR-WnQ2SN?usp=sharing
 ### steps to setup and try the project 
 -  Download the project
 -  php artisan migrate >> create the database and tables
